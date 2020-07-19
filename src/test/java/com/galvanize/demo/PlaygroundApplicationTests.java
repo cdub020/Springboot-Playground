@@ -40,4 +40,12 @@ class PlaygroundApplicationTests {
 	public void checkn() throws Exception {
 		this.mockMvc.perform(post("/math/sum?n=5&n=4&n=3")).andExpect(content().string("5 + 4 + 3 = 12"));
 	}
+
+	@Test
+	public void volume() throws Exception {
+		this.mockMvc.perform(get("/math/volume/2/2/2"))
+					.andExpect(content().string("The volume of a 2x2x2 rectangle is 8"))
+					.andExpect(status().isOk())
+					.andReturn();
+	}
 }
