@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,5 +48,26 @@ class PlaygroundApplicationTests {
 					.andExpect(content().string("The volume of a 2x2x2 rectangle is 8"))
 					.andExpect(status().isOk())
 					.andReturn();
+	}
+
+	@Test
+	public void area() throws Exception {
+
+		this.mockMvc.perform(post("/math/area")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"type\" : \"circle\", \"radius\" : \"4\"}"))
+						.andExpect(content().string("Area of a circle with a radius of 4 is 50.26548"));
+		this.mockMvc.perform(post("/math/area")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"type\" : \"rectangle\", \"width\" : \"4\", \"height\" : \"7\"}"))
+				.andExpect(content().string("Area of a 4x7 rectangle is 28"));
+		this.mockMvc.perform(post("/math/area")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"type\" : \"rectangle\", \"height\" : \"7\"}"))
+				.andExpect(content().string("Invalid"));
+		this.mockMvc.perform(post("/math/area")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"type\" : \"circle\"}"))
+				.andExpect(content().string("Invalid"));
 	}
 }
