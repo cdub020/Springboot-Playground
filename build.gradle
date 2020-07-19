@@ -21,7 +21,12 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-	testLogging {
-        	events "passed", "skipped", "failed"
-    	}
+    	 testLogging {
+        // set options for log level LIFECYCLE
+        events "passed", "skipped", "failed"
+
+        showExceptions true
+        showCauses true
+        exceptionFormat "full"
+    }
 }
