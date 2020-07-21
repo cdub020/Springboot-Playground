@@ -25,7 +25,14 @@ class PlaygroundApplicationTests {
 
 	@Test
 	public void checkpi() throws Exception {
-		this.mockMvc.perform(get("/math/pi")).andDo(print()).andExpect(content().string("3.141592653589793"));
+		this.mockMvc.perform(get("/math/pi")).andExpect(content().string("3.141592653589793"));
+	}
+
+	@Test
+	public void checkjson() throws Exception{
+		this.mockMvc.perform(get("/flights/flight"))
+				.andExpect(status().isOk())
+				.andExpect(content().json("{\"Departs\":\"2017-04-21 14:34\",\"Tickets\":[{\"Passenger\":{\"FirstName\":\"Some name\",\"LastName\":\"Some other name\"},\"Price\":200}]}"));
 	}
 
 	@Test
