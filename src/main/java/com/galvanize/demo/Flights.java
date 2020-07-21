@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.StreamingHttpOutputMessage;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,10 +27,19 @@ public class Flights {
         newname.setFirstName("Some name");
         newname.setLastName("Some other name");
 
+        Flight.NewClass.Names newname2 = new Flight.NewClass.Names();
+        newname2.setFirstName("Name B");
+        newname2.setLastName("Name C");
+
         List<Flight.NewClass> newflight = new ArrayList<>();
         newflight.add(new Flight.NewClass());
         newflight.get(0).setPrice(200);
         newflight.get(0).setPassenger(newname);
+
+        newflight.add(new Flight.NewClass());
+        newflight.get(1).setPrice(150);
+        newflight.get(1).setPassenger(newname2);
+
         flight1.setTickets(newflight);
 
         return flight1;
@@ -45,7 +53,7 @@ public class Flights {
             flight1.departs = cal;
             Flight.NewClass.Names newname = new Flight.NewClass.Names();
             newname.setFirstName("Some name");
-            newname.setLastName(null);
+            newname.setLastName("Some other name");
 
             List<Flight.NewClass> newflight = new ArrayList<>();
             newflight.add(new Flight.NewClass());
@@ -60,7 +68,6 @@ public class Flights {
         private Calendar departs;
         private List<NewClass> tickets;
 
-        @JsonProperty("Tickets")
         public List<NewClass> getTickets() {
             return tickets;
         }
@@ -69,7 +76,7 @@ public class Flights {
             this.tickets = tickets;
         }
 
-        @JsonProperty("Departs")
+        @JsonIgnore
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
         public Calendar getDeparts() {
             return departs;
@@ -83,7 +90,6 @@ public class Flights {
             private Names passenger;
             private int price;
 
-            @JsonProperty("Passenger")
             public Names getPassenger() {
                 return passenger;
             }
@@ -92,7 +98,6 @@ public class Flights {
                 this.passenger = passenger;
             }
 
-            @JsonProperty("Price")
             public int getPrice() {
                 return price;
             }
@@ -103,7 +108,6 @@ public class Flights {
                 private String firstName;
                 private String lastName;
 
-                @JsonProperty("FirstName")
                 @JsonInclude(JsonInclude.Include.NON_NULL)
                 public String getFirstName() {
                     return firstName;
@@ -112,7 +116,6 @@ public class Flights {
                 public void setFirstName(String firstName) {
                     this.firstName = firstName;
                 }
-                @JsonProperty("LastName")
                 @JsonInclude(JsonInclude.Include.NON_NULL)
                 public String getLastName() {
                     return lastName;
@@ -122,6 +125,27 @@ public class Flights {
                     this.lastName = lastName;
                 }
             }
+        }
+    }
+
+    @PostMapping("flights/tickets/total")
+    public Total totalprice(@RequestBody Flight totalflight){
+        Total newtotal = new Total();
+        for (int x=0; x<totalflight.getTickets().size(); x++){
+            newtotal.setResult(newtotal.getResult() + totalflight.getTickets().get(x).getPrice());
+        }
+        return newtotal;
+    }
+
+    public static class Total {
+        private int result;
+
+        public int getResult() {
+            return result;
+        }
+
+        public void setResult(int result) {
+            this.result = result;
         }
     }
 }
