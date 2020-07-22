@@ -2,6 +2,8 @@ package com.galvanize.demo;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/lessons")
 public class LessonsController{
@@ -19,5 +21,15 @@ public class LessonsController{
     @PostMapping("")
     public Lesson create(@RequestBody Lesson lesson) {
         return this.repository.save(lesson);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Lesson> byid(@PathVariable long id){
+        return this.repository.findById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletebyid(@PathVariable long id){
+        this.repository.deleteById(id);
     }
 }

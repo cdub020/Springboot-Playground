@@ -1,6 +1,7 @@
 package com.galvanize.demo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class Lesson {
 
     @Column(columnDefinition = "date")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonIgnore
     private Date deliveredOn;
 
     public Long getId() {
@@ -34,6 +36,7 @@ public class Lesson {
         this.title = title;
     }
 
+    @JsonIgnore
     public Date getDeliveredOn() {
         return deliveredOn;
     }
