@@ -1,8 +1,14 @@
 package com.galvanize.demo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,14 +26,25 @@ public class LessonsController{
         return this.repository.findAll();
     }
 
-    @PostMapping("")
-    public Lesson create(@RequestBody Lesson lesson) {
-        return this.repository.save(lesson);
-    }
-
     @GetMapping("/{id}")
     public Optional<Lesson> byid(@PathVariable long id){
         return this.repository.findById(id);
+    }
+
+    @GetMapping("/find/{title}")
+    public Lesson getbytitle(@PathVariable String title){
+        return this.repository.findByTitle(title);
+    }
+
+    @GetMapping("/find")
+    public Iterable<Lesson> getbydate(@RequestParam(value="date1") @DateTimeFormat(pattern="yyyy-MM-dd") Date date1,
+                            @RequestParam(value="date2") @DateTimeFormat(pattern="yyyy-MM-dd") Date date2){
+            return this.repository.findBydeliveredOnBetween(date1, date2);
+    }
+
+    @PostMapping("")
+    public Lesson create(@RequestBody Lesson lesson) {
+        return this.repository.save(lesson);
     }
 
     @DeleteMapping("/{id}")
